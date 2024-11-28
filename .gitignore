@@ -1,0 +1,43 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Poetry-specific
+poetry.lock
+
+# PyCharm project files
+.idea/
+
+# Test results
+.pytest_cache/
+*.log
+.coverage
+.tox/
+htmlcov/
+
+# Environment variables
+.env
+.env.*
+
+# macOS system files
+.DS_Store
+
+# Backup files
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Jupyter Notebook checkpoints (if used)
+.ipynb_checkpoints/
+
+# Packaging files
+*.egg-info/
+dist/
+build/
