@@ -1,4 +1,5 @@
 import random
+from collections import deque
 from core.cell import Cell
 
 class Board:
@@ -51,27 +52,70 @@ class Board:
                     mine_count += 1
         return mine_count
 
+    # Depth first search implementation of reveal_cell
+    #
+    # def reveal_cell(self, row, col):
+    #     """
+    #     Reveals a specific cell and propagates the reveal if the cell has no adjacent mines.
+    #     """
+    #     if not self.is_valid_position(row, col) or self.grid[row][col].is_revealed:
+    #         return False  # Invalid position or already revealed
+    #
+    #     cell = self.grid[row][col]
+    #     cell.reveal()  # Reveal the cell
+    #
+    #     # Create a list of tuples to navigate surrounding cells
+    #     adjacent_positions = [(-1, -1), (-1, 0), (-1, 1),
+    #                           (0, -1),          (0, 1),
+    #                           (1, -1), (1, 0), (1, 1)]
+    #
+    #     # If there are no adjacent mines, reveal neighboring cells recursively
+    #     if cell.adjacent_mines == 0:
+    #         for dr, dc in adjacent_positions:
+    #             new_row, new_col = row + dr, col + dc
+    #             if self.is_valid_position(new_row, new_col) and not self.grid[new_row][new_col].is_revealed:
+    #                 self.reveal_cell(new_row, new_col)
+    #
+    #     return True
+
+
+   # Breadth first search of reveal cell
     def reveal_cell(self, row, col):
         """
-        Reveals a specific cell and propagates the reveal if the cell has no adjacent mines.
+        Reveals a specific cell and propagates the reveal using breadth-first search
+        if the cell has no adjacent mines.
         """
         if not self.is_valid_position(row, col) or self.grid[row][col].is_revealed:
             return False  # Invalid position or already revealed
 
-        cell = self.grid[row][col]
-        cell.reveal()  # Reveal the cell
+        # Create a queue to manage cells to process
+        queue = deque()
+        queue.append((row, col))  # Start with the given cell
 
         # Create a list of tuples to navigate surrounding cells
         adjacent_positions = [(-1, -1), (-1, 0), (-1, 1),
-                              (0, -1),          (0, 1),
+                              (0, -1), (0, 1),
                               (1, -1), (1, 0), (1, 1)]
 
-        # If there are no adjacent mines, reveal neighboring cells recursively
-        if cell.adjacent_mines == 0:
-            for dr, dc in adjacent_positions:
-                new_row, new_col = row + dr, col + dc
-                if self.is_valid_position(new_row, new_col) and not self.grid[new_row][new_col].is_revealed:
-                    self.reveal_cell(new_row, new_col)
+        while queue:
+            current_row, current_col = queue.popleft()  # Pop the next cell from the queue
+            current_cell = self.grid[current_row][current_col]
+
+            # Skip if already revealed (this can happen with multiple queue additions)
+            if current_cell.is_revealed:
+                continue
+
+            # Reveal the current cell
+            current_cell.reveal()
+
+            # If the current cell has no adjacent mines, add its neighbors to the queue
+            if current_cell.adjacent_mines == 0:
+                for dr, dc in adjacent_positions:
+                    new_row, new_col = current_row + dr, current_col + dc
+                    if self.is_valid_position(new_row, new_col):
+                        neighbor_cell = self.grid[new_row][new_col]
+                        if not neighbor_cell.is_revealed and (new_row, new_col) not in queue:
+                            queue.append((new_row, new_col))  # Add to queue for processing
 
         return True
 
