@@ -1,3 +1,4 @@
+# core/game.py
 from core.board import Board
 
 class Game:
@@ -15,40 +16,43 @@ class Game:
     def reveal_cell(self, row, col):
         """
         Handles the logic for revealing a cell.
+        Returns a tuple (game_over, message).
         """
         if self.is_game_over:
-            print("The game is over! Start a new game.")
-            return
+            return True, "The game is over! Start a new game."
 
         cell = self.board.grid[row][col]
         if cell.is_flagged:
-            print("Cell is flagged. Unflag it first to reveal.")
-            return
+            return False, "Cell is flagged. Unflag it first to reveal."
 
         if cell.is_mine:
             self.is_game_over = True
-            print("You hit a mine! Game over.")
-        else:
-            # Update the board and reveal adjacent cells if this cell is empty
-            self.board.reveal_cell(row, col)
+            return True, "You hit a mine! Game over."
 
-            # Check if the player has won
-            self.check_win_condition()
+        # Update the board and reveal adjacent cells if this cell is empty
+        self.board.reveal_cell(row, col)
+
+        # Check if the player has won
+        self.check_win_condition()
+
+        return False, None  # Game continues
 
     def flag_cell(self, row, col):
         """
         Toggles a flag on a cell.
+        Returns a message indicating the result.
         """
         if self.is_game_over:
-            print("The game is over! Start a new game.")
-            return
+            return "The game is over! Start a new game."
 
         cell = self.board.grid[row][col]
         cell.toggle_flag()
+        return f"Flag {'set' if cell.is_flagged else 'removed'} on cell ({row}, {col})."
 
     def check_win_condition(self):
         """
         Check if all non-mine cells have been revealed.
+        If the player has won, set the `is_winner` flag.
         """
         for row in range(self.rows):
             for col in range(self.cols):
@@ -59,7 +63,7 @@ class Game:
         # If we reach here, the player has revealed all non-mine cells
         self.is_game_over = True
         self.is_winner = True
-        print("Congratulations! You've won the game.")
+        return "Congratulations! You've won the game."
 
     def restart(self):
         """
@@ -68,3 +72,13 @@ class Game:
         self.board = Board(self.rows, self.cols, self.num_mines)
         self.is_game_over = False
         self.is_winner = False
+        return "Game restarted."
+
+    def get_cell(self, row, col):
+        """
+        Get the current state of the cell (for UI to query).
+        Returns a tuple (is_revealed, adjacent_mines, is_mine).
+        """
+        cell = self.board.grid[row][col]
+        return (cell.is_revealed, cell.adjacent_mines, cell.is_mine)
+
