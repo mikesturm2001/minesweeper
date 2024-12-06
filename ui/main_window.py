@@ -7,7 +7,7 @@ class MainWindow(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Minesweeper")
-        self.geometry("400x400")
+        self.geometry("600x500")
 
         self.game_board_frame = GameBoard(self)
         self.game_board_frame.pack()

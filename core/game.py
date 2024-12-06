@@ -1,5 +1,6 @@
 # core/game.py
 from core.board import Board
+import time
 
 class Game:
     def __init__(self, rows, cols, num_mines):
@@ -9,7 +10,9 @@ class Game:
         self.rows = rows
         self.cols = cols
         self.num_mines = num_mines
-        self.board = Board(rows, cols, num_mines)  # Create the board
+        self.mines_left = num_mines
+        self.start_time = None
+        self.board = self.initialize_board()  # Create the board
         self.is_game_over = False
         self.is_winner = False
 
@@ -34,6 +37,8 @@ class Game:
 
         # Check if the player has won
         self.check_win_condition()
+        if self.is_winner:
+            return True, "You Win!"
 
         return False, None  # Game continues
 
@@ -47,6 +52,11 @@ class Game:
 
         cell = self.board.grid[row][col]
         cell.toggle_flag()
+
+        if cell.is_flagged:
+            self.mines_left = self.mines_left - 1
+        else:
+            self.mines_left = self.mines_left + 1
         return f"Flag {'set' if cell.is_flagged else 'removed'} on cell ({row}, {col})."
 
     def check_win_condition(self):
@@ -69,7 +79,7 @@ class Game:
         """
         Restart the game with the same configuration.
         """
-        self.board = Board(self.rows, self.cols, self.num_mines)
+        self.board = self.initialize_board()
         self.is_game_over = False
         self.is_winner = False
         return "Game restarted."
@@ -82,3 +92,13 @@ class Game:
         cell = self.board.grid[row][col]
         return (cell.is_revealed, cell.adjacent_mines, cell.is_mine)
 
+
+    def initialize_board(self):
+        self.start_time = time.time()
+        return Board(self.rows, self.cols, self.num_mines)
+
+
+    def get_elapsed_time(self):
+        if self.start_time:
+            return int(time.time() - self.start_time)
+        return 0
