@@ -111,7 +111,6 @@ class GameBoard(tk.Frame):
                 # Bind right-click to flag the cell
                 btn.bind("<Button-3>", lambda event, r=row, c=col: self.flag_cell(r, c))
 
-
     def start_new_game(self):
         """Start a new game with the specified settings."""
         try:
@@ -135,6 +134,13 @@ class GameBoard(tk.Frame):
             # Resize board and refresh UI
             self.resize_board(rows, cols, num_mines)
             self.create_game_grid()
+
+            # Reset Timer and Mines Left
+            self.timer_label.config(text="Time: 0")  # Reset the timer display
+            self.mines_left_label.config(text=f"Mines Left: {self.game.mines_left}")  # Reset mines left display
+
+            # Restart the timer update loop
+            self.update_timer_and_mines_left()
         except ValueError as e:
             messagebox.showerror("Invalid Input", str(e))
 
