@@ -2,6 +2,7 @@
 from core.board import Board
 import time
 
+
 class Game:
     def __init__(self, rows, cols, num_mines):
         """
@@ -92,11 +93,9 @@ class Game:
         cell = self.board.grid[row][col]
         return (cell.is_revealed, cell.adjacent_mines, cell.is_mine)
 
-
     def initialize_board(self):
         self.start_time = time.time()
         return Board(self.rows, self.cols, self.num_mines)
-
 
     def get_elapsed_time(self):
         if self.start_time:

@@ -2,6 +2,7 @@ import random
 from collections import deque
 from core.cell import Cell
 
+
 class Board:
     def __init__(self, rows, cols, num_mines):
         """
@@ -78,8 +79,7 @@ class Board:
     #
     #     return True
 
-
-   # Breadth first search of reveal cell
+    # Breadth first search of reveal cell
     def reveal_cell(self, row, col):
         """
         Reveals a specific cell and propagates the reveal using breadth-first search

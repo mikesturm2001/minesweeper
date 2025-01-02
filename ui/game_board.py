@@ -4,6 +4,7 @@ import tkmacosx
 from tkinter import messagebox
 from core.game import Game
 
+
 class GameBoard(tk.Frame):
     COLOR_MAP = {
         "1": "blue",
@@ -17,7 +18,6 @@ class GameBoard(tk.Frame):
         "F": "orange",
         "?": "black",  # Default hidden state
     }
-
 
     def __init__(self, master):
         super().__init__(master)
@@ -81,7 +81,6 @@ class GameBoard(tk.Frame):
         self.mines_left_label = tk.Label(status_frame, text=f"Mines Left: {self.game.mines_left}")
         self.mines_left_label.grid(row=0, column=1, padx=10)
 
-
     def create_game_grid(self):
         """Create the grid of buttons for the game board."""
         if hasattr(self, "grid_frame"):
@@ -144,7 +143,6 @@ class GameBoard(tk.Frame):
         except ValueError as e:
             messagebox.showerror("Invalid Input", str(e))
 
-
     def update_timer_and_mines_left(self):
         if not self.game.is_game_over:
             # Update timer
@@ -156,7 +154,6 @@ class GameBoard(tk.Frame):
 
             # Call this method again after 1 second
             self.after(1000, self.update_timer_and_mines_left)
-
 
     def reveal_cell(self, row, col):
         if self.game.is_game_over:
@@ -174,7 +171,6 @@ class GameBoard(tk.Frame):
             # After revealing a cell, refresh all buttons to reflect the updated state
             self.refresh_buttons()
 
-
     def reveal_entire_board(self):
         """Reveal all cells on the board."""
         for row in range(self.game.board.rows):
@@ -182,14 +178,12 @@ class GameBoard(tk.Frame):
                 self.game.board.grid[row][col].is_revealed = True  # Mark all cells as revealed
                 self.update_button(row, col)  # Update the button to display the cell's state
 
-
     def flag_cell(self, row, col):
         if self.game.is_game_over:
             return  # Do nothing if the game is over
 
         self.game.flag_cell(row, col)  # Toggle the flag state of the cell
         self.update_button(row, col)  # Update the button's appearance
-
 
     def update_button(self, row, col):
         # Get the cell object
@@ -201,13 +195,11 @@ class GameBoard(tk.Frame):
                    bg="white" if cell.is_revealed else "gray",
                    fg=self.COLOR_MAP.get(str(cell), "black"))
 
-
     def refresh_buttons(self):
         # Loop through all cells and refresh their buttons
         for row in range(self.game.board.rows):
             for col in range(self.game.board.cols):
                 self.update_button(row, col)
-
 
     def resize_board(self, rows, cols, num_mines):
         """Dynamically resize the board."""
